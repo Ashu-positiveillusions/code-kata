@@ -140,8 +140,8 @@ const fetchBalanceSheet = async (req, res) => {
 
 const submitApplicationForLoan = async (req, res) => {
   try {
-    const {id} = req.params;
-    const applicationFromDb = await businessModel.findOne({_id:id}).lean();
+    const { id } = req.params;
+    const applicationFromDb = await businessModel.findOne({ _id: id }).lean();
     let balanceSheet = applicationFromDb.balanceSheet;
     let totalProfitOrLoss = 0;
     let totalAssetValue = 0;
@@ -162,7 +162,7 @@ const submitApplicationForLoan = async (req, res) => {
     };
     if (
       applicationFromDb.balanceSheet.length === 12 &&
-      totalAssetValue/12 >= applicationFromDb.loanAmount
+      totalAssetValue / 12 >= applicationFromDb.loanAmount
     ) {
       dataToDecisionEngine.preAssessment = 100;
     } else if (
@@ -176,19 +176,18 @@ const submitApplicationForLoan = async (req, res) => {
 
     // send data to decision engine
     const responseFromDataEngine = await dataEngineMimic(dataToDecisionEngine);
-    // need to add it in DB
     applicationFromDb.approvedAmount =
       responseFromDataEngine * applicationFromDb.loanAmount;
-      applicationFromDb.applicationReviewedAndSubmitted = true;
+    applicationFromDb.applicationReviewedAndSubmitted = true;
 
     let applicationFinalInDb = await businessModel.findOneAndUpdate(
-      {_id:id}, applicationFromDb, {new:true}
+      { _id: id },
+      applicationFromDb,
+      { new: true }
     );
     return res.status(200).send({
       status: true,
-      message: `Your loan has been approved to the amount of ${
-        applicationFinalInDb.approvedAmount
-      }`,
+      message: `Your loan has been approved to the amount of ${applicationFinalInDb.approvedAmount}`,
       data: applicationFinalInDb,
     });
   } catch (error) {

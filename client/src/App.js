@@ -3,13 +3,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 function App() {
-  const [formData, setFormData] = useState({accountingProvider: "MYOB"});
+  const [formData, setFormData] = useState({ accountingProvider: "MYOB" });
   const [applicationInitiated, setApplicationInitiated] = useState(false);
   const [applicationId, setApplicationId] = useState("");
   const [isBalanceSheetFetched, setIsBalanceSheetFetched] = useState(false);
   const [balanceSheet, setbalanceSheet] = useState([]);
   const [finalMessage, setFinalMessage] = useState("");
-  
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
@@ -81,7 +81,7 @@ function App() {
 
   const handleModalClose = () => {
     window.location.reload();
-  }
+  };
 
   const ApplicationInitiatingForm = () => {
     return (
@@ -103,6 +103,8 @@ function App() {
               required
               disabled={applicationInitiated}
               style={inputStyle}
+              autocomplete="off"
+              placeholder="Name of Business"
             />
           </div>
           <button
@@ -120,7 +122,7 @@ function App() {
   const BusinessDetailsAndSheetForm = () => {
     return (
       <>
-        <h3 style={{ margin: "10px"}}>Business Details</h3>
+        <h3 style={{ margin: "10px" }}>Business Details</h3>
         <form
           onSubmit={handleSubmitBusinessDetailsAndSheetForm}
           style={formStyle}
@@ -138,6 +140,8 @@ function App() {
               required
               disabled={isBalanceSheetFetched}
               style={inputStyle}
+              autocomplete="off"
+              placeholder="Business Identification Number"
             />
           </div>
           <div className="form-group">
@@ -168,6 +172,8 @@ function App() {
               required
               disabled={isBalanceSheetFetched}
               style={inputStyle}
+              autocomplete="off"
+              placeholder="Loan Amount"
             />
           </div>
           <div className="form-group">
@@ -201,37 +207,44 @@ function App() {
   };
 
   const Modal = () => {
-    // if (!isOpen) return null;
     const modalStyle = {
-      display: finalMessage.length ? 'block' : 'none', // Show or hide the modal
-      position: 'fixed',
-      top: '0',
-      left: '0',
-      width: '100%',
-      height: '100%',
-      backgroundColor: 'rgba(0, 0, 0, 0.9)', // Semi-transparent background
-      zIndex: '1',
-      alignItems: 'center',
-      justifyContent: 'center', 
+      display: finalMessage.length ? "block" : "none", // Show or hide the modal
+      position: "fixed",
+      top: "0",
+      left: "0",
+      width: "100%",
+      height: "100%",
+      backgroundColor: "rgba(0, 0, 0, 0.9)", // Semi-transparent background
+      zIndex: "1",
+      alignItems: "center",
+      justifyContent: "center",
     };
-    
+
     const modalContentStyle = {
-      backgroundColor: '#0000',
-      padding: '20px',
-      borderRadius: '5px',
-      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-      
+      backgroundColor: "#0000",
+      padding: "20px",
+      borderRadius: "5px",
+      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
     };
     return (
       <div style={modalStyle}>
-      <div style={modalContentStyle}>
-        <h2 style={{color:'white'}}>RESULT</h2>
-        <p style={{color:'white'}}>{finalMessage}</p>
-      </div>
-      <button onClick={handleModalClose} style={{backgroundColor:'white', color:'black',width: "29%",padding: "10px 20px"}}>
+        <div style={modalContentStyle}>
+          <h2 style={{ color: "white" }}>RESULT</h2>
+          <p style={{ color: "white" }}>{finalMessage}</p>
+        </div>
+        <button
+          onClick={handleModalClose}
+          style={{
+            backgroundColor: "white",
+            color: "black",
+            width: "29%",
+            padding: "10px 20px",
+            borderRadius: "10px",
+          }}
+        >
           New Application
         </button>
-    </div>
+      </div>
     );
   };
 
@@ -259,7 +272,11 @@ function App() {
             ))}
           </tbody>
         </table>
-        <button onClick={handleFinalSubmit} style={buttonStyle} disabled={finalMessage}>
+        <button
+          onClick={handleFinalSubmit}
+          style={buttonStyle}
+          disabled={finalMessage}
+        >
           Review and Submit Application
         </button>
       </div>
@@ -267,7 +284,9 @@ function App() {
   };
   return (
     <div className="App">
-      <header className="App-header"><h2>Business Loan Application</h2></header>
+      <header className="App-header">
+        <h2>Business Loan Application</h2>
+      </header>
       <div className="main-body">
         {ApplicationInitiatingForm()}
         {applicationInitiated ? BusinessDetailsAndSheetForm() : null}
@@ -277,7 +296,6 @@ function App() {
     </div>
   );
 }
-
 
 const tableStyle = {
   width: "100%",
@@ -297,31 +315,27 @@ const tdStyle = {
   borderBottom: "1px solid #ddd",
 };
 const labelStyle = {
-  fontSize: "1rem", // Adjust the font size
-  // fontWeight: "bold", // Bold labels
-  textAlign: "center", // Align labels to the left
-  marginBottom: "10px", // Spacing below labels
-  whiteSpace: 'pre-wrap' 
+  fontSize: "1rem",
+  textAlign: "center",
+  marginBottom: "10px",
+  whiteSpace: "pre-wrap",
 };
 const formStyle = {
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-  padding: '10px',
-  
+  padding: "10px",
 };
 
 const inputStyle = {
-  // width: "100%",
-  maxWidth: "300px", // Equal sizes for input fields
+  maxWidth: "300px",
   padding: "8px",
-  marginBottom: "10px", // Spacing between input fields
+  marginBottom: "10px",
   border: "1px solid #ccc",
   borderRadius: "5px",
   marginTop: "5px",
-  width:'220px'
-
+  width: "220px",
 };
 
 const buttonStyle = {
