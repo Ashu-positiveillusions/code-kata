@@ -3,7 +3,6 @@ const businessModel = require("../models/businessModel");
 //api call to accounting provider to get balance sheet based on BIN number
 const requestBalanceSheet = (BIN) => {
   return new Promise(function (resolve) {
-    console.log(BIN);
     setTimeout(function () {
       const myArray = (sheet = [
         {
@@ -93,22 +92,46 @@ const dataEngineMimic = (data) => {
   });
 };
 
+const initiateApplication = async (req, res) => {
+  try {
+    req.body.applicationInitiated = true;
+    const applicationInitiated = await businessModel.create(req.body);
+    return res.status(201).send({
+      status: true,
+      message: "application initiated",
+      data: applicationInitiated,
+    });
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+};
+
 const fetchBalanceSheet = async (req, res) => {
   try {
-    const { businessIdentificationNumber } = req.query;
+    const { id } = req.params;
+    const updatedBusinessApplication = req.body;
     // get balance sheet based on businessIdentificationNumber (BIN) from the selected accounting provider
     const balanceSheet = await requestBalanceSheet(
-      businessIdentificationNumber
+      updatedBusinessApplication.businessIdentificationNumber
     );
     if (!balanceSheet || !balanceSheet.length) {
       return res
         .status(400)
         .send({ status: false, message: "BalanceSheet Not Available" });
     }
+    updatedBusinessApplication.balanceSheetRequested = true;
+    updatedBusinessApplication.balanceSheet = balanceSheet;
+    const updateBusinessApplicationSheet = await businessModel
+      .findOneAndUpdate({ _id: id }, updatedBusinessApplication, { new: true })
+      .lean();
+    if (!updateBusinessApplicationSheet)
+      return res
+        .status(404)
+        .send({ status: false, message: "no application found" });
     return res.status(200).send({
       status: true,
       message: "Balance Sheet Found",
-      sheet: balanceSheet,
+      data: updateBusinessApplicationSheet,
     });
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });
@@ -117,12 +140,14 @@ const fetchBalanceSheet = async (req, res) => {
 
 const submitApplicationForLoan = async (req, res) => {
   try {
-    const loanApplicationDetails = req.body;
-    loanApplicationDetails.appliedDate = Date.now();
+    const {id} = req.params;
+    const applicationFromDb = await businessModel.findOne({_id:id}).lean();
+    let balanceSheet = applicationFromDb.balanceSheet;
     let totalProfitOrLoss = 0;
     let totalAssetValue = 0;
     let hasMadeProfitInLast12Months = false;
-    for (let monthlyDetail of loanApplicationDetails.balanceSheet) {
+
+    for (let monthlyDetail of balanceSheet) {
       if (monthlyDetail.profitOrLoss > 0) {
         hasMadeProfitInLast12Months = true;
       }
@@ -131,17 +156,17 @@ const submitApplicationForLoan = async (req, res) => {
     }
 
     const dataToDecisionEngine = {
-      name: loanApplicationDetails.name,
-      establishmentYear: loanApplicationDetails.establishmentYear,
+      name: applicationFromDb.name,
+      establishmentYear: applicationFromDb.establishmentYear,
       yearlyProfitOrLoss: totalProfitOrLoss,
     };
     if (
-      loanApplicationDetails.balanceSheet.length === 12 &&
-      totalAssetValue / 12 >= loanApplicationDetails.loanAmount
+      applicationFromDb.balanceSheet.length === 12 &&
+      totalAssetValue/12 >= applicationFromDb.loanAmount
     ) {
       dataToDecisionEngine.preAssessment = 100;
     } else if (
-      loanApplicationDetails.balanceSheet.length === 12 &&
+      applicationFromDb.balanceSheet.length === 12 &&
       hasMadeProfitInLast12Months
     ) {
       dataToDecisionEngine.preAssessment = 60;
@@ -151,18 +176,18 @@ const submitApplicationForLoan = async (req, res) => {
 
     // send data to decision engine
     const responseFromDataEngine = await dataEngineMimic(dataToDecisionEngine);
-
     // need to add it in DB
-    loanApplicationDetails.approvedAmount =
-      responseFromDataEngine * loanApplicationDetails.loanAmount;
+    applicationFromDb.approvedAmount =
+      responseFromDataEngine * applicationFromDb.loanAmount;
+      applicationFromDb.applicationReviewedAndSubmitted = true;
 
-    let applicationFinalInDb = await businessModel.create(
-      loanApplicationDetails
+    let applicationFinalInDb = await businessModel.findOneAndUpdate(
+      {_id:id}, applicationFromDb, {new:true}
     );
     return res.status(200).send({
       status: true,
       message: `Your loan has been approved to the amount of ${
-        responseFromDataEngine * loanApplicationDetails.loanAmount
+        applicationFinalInDb.approvedAmount
       }`,
       data: applicationFinalInDb,
     });
@@ -171,4 +196,8 @@ const submitApplicationForLoan = async (req, res) => {
   }
 };
 
-module.exports = { fetchBalanceSheet, submitApplicationForLoan };
+module.exports = {
+  fetchBalanceSheet,
+  submitApplicationForLoan,
+  initiateApplication,
+};

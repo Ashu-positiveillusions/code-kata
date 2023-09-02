@@ -2,7 +2,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const route = require("./src/routes/route");
 const mongoose = require("mongoose");
+const cors = require("cors");
 const app = express();
+// Enable CORS for all routes
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -18,6 +21,6 @@ mongoose
 
 app.use("/", route);
 
-app.listen(process.env.PORT || 3000, function () {
-  console.log("Express app running on port " + (process.env.PORT || 3000));
+app.listen(process.env.PORT || 4000, function () {
+  console.log("Express app running on port " + (process.env.PORT || 4000));
 });

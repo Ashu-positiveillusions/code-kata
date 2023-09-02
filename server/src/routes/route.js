@@ -1,25 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const { registerUser, loginUser } = require("../controllers/userController");
-const {
-  createAccountingProvider,
-  getAccountingProviderList,
-} = require("../controllers/accountingProviderController");
 const {
   fetchBalanceSheet,
   submitApplicationForLoan,
+  initiateApplication
 } = require("../controllers/businessApplicationController");
 
-//user routes
-router.post("/registerUser", registerUser);
-router.post("/loginUser", loginUser);
-
-//accounting provider routes
-router.post("/createAccountingProvider", createAccountingProvider);
-router.get("/getAccountingProviderList", getAccountingProviderList);
-
 //business Application routes
-router.get("/fetchBalanceSheet", fetchBalanceSheet);
-router.post("/submitApplicationForLoan", submitApplicationForLoan);
+router.post("/initiateApplication", initiateApplication)
+router.patch("/fetchBalanceSheet/:id", fetchBalanceSheet);
+router.patch("/submitApplicationForLoan/:id", submitApplicationForLoan);
 
 module.exports = router;

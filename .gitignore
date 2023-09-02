@@ -1,1 +1,25 @@
 ./server/node_modules
+./server/package-lock.json
+./client/loanapplicationclient/node_modules
+./client/loanapplicationclient/package-lock.json
+
+
+./client/loanapplicationclient/.pnp
+./client/loanapplicationclient/.pnp.js
+
+# testing
+./client/loanapplicationclient/coverage
+
+# production
+./client/loanapplicationclient/build
+
+# misc
+./client/loanapplicationclient/.DS_Store
+./client/loanapplicationclient/.env.local
+./client/loanapplicationclient/.env.development.local
+./client/loanapplicationclient/.env.test.local
+./client/loanapplicationclient/.env.production.local
+
+./client/loanapplicationclient/npm-debug.log*
+./client/loanapplicationclient/yarn-debug.log*
+./client/loanapplicationclient/yarn-error.log*
