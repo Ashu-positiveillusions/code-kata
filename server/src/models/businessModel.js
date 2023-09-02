@@ -6,7 +6,7 @@ const businessLoanApplication = new mongoose.Schema(
     loanAmount: { type: Number},
     accountingProvider: {type: String},
     businessIdentificationNumber: { type: String},
-    establishmentYear: { type: Number},
+    establishmentYear: { type: String},
     applicationInitiated: { type: Boolean, default: false },
     balanceSheetRequested: { type: Boolean, default: false },
     applicationReviewedAndSubmitted: { type: Boolean, default: false },
