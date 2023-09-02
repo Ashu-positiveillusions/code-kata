@@ -142,7 +142,7 @@ function App() {
           </div>
           <div className="form-group">
             <label htmlFor="EstablishmentYear" style={labelStyle}>
-              Establishment Year :{"                      "}
+              Establishment Year :{"                       "}
             </label>
             <input
               type="month"
@@ -157,7 +157,7 @@ function App() {
           </div>
           <div className="form-group">
             <label htmlFor="LoanAmount" style={labelStyle}>
-              Amount for Loan :{"                         "}
+              Amount for Loan :{"                          "}
             </label>
             <input
               type="number"
@@ -172,7 +172,7 @@ function App() {
           </div>
           <div className="form-group">
             <label htmlFor="accountingProvider" style={labelStyle}>
-              Select Your Accounting Provider :{" "}
+              Select Your Accounting Provider :{"   "}
             </label>
             <select
               value={formData.accountingProvider}
@@ -320,6 +320,7 @@ const inputStyle = {
   border: "1px solid #ccc",
   borderRadius: "5px",
   marginTop: "5px",
+  width:'220px'
 
 };
 
@@ -335,7 +336,7 @@ const buttonStyle = {
   marginBottom: "10px",
 };
 const selectStyle = {
-  width: "180px",
+  width: "240px",
   padding: "8px",
   border: "1px solid #ccc",
   borderRadius: "4px",
