@@ -27,7 +27,7 @@ function App() {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "http://192.168.0.104:4000/initiateApplication",
+      url: "http://172.18.144.1:4000/initiateApplication",
       headers: {
         "Content-Type": "application/json",
       },
@@ -51,7 +51,7 @@ function App() {
     let config = {
       method: "patch",
       maxBodyLength: Infinity,
-      url: `http://192.168.0.104:4000/fetchBalanceSheet/${applicationId}`,
+      url: `http://172.18.144.1:4000/fetchBalanceSheet/${applicationId}`,
       headers: {
         "Content-Type": "application/json",
       },
@@ -65,17 +65,13 @@ function App() {
     let config = {
       method: "patch",
       maxBodyLength: Infinity,
-      url: `http://192.168.0.104:4000/submitApplicationForLoan/${applicationId}`,
+      url: `http://172.18.144.1:4000/submitApplicationForLoan/${applicationId}`,
       headers: {
         "Content-Type": "application/json",
       },
       // data: formData,
     };
     let applicationResponse = await axiosCall(config);
-    console.log(
-      "applicationResponseapplicationResponseapplicationResponseapplicationResponse",
-      applicationResponse
-    );
     setFinalMessage(applicationResponse.message);
   };
 
